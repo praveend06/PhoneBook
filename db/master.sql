@@ -30,7 +30,7 @@ CREATE TABLE Contact_Tbl
 (
   id serial NOT NULL,
   name character varying(50),
-  phone int,
+  phone bigint,
   email character varying(100),
   LIKE General_Tbl INCLUDING DEFAULTS,
   CONSTRAINT contact_pk PRIMARY KEY (id)

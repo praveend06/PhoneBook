@@ -1,6 +1,7 @@
 package in.praveenlab.phonebook.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,18 +9,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import in.praveenlab.phonebook.entity.Contact;
+import in.praveenlab.phonebook.properties.AppProperties;
 import in.praveenlab.phonebook.service.ContactService;
 
 @Controller
 public class ContactInfoController {
 
 	ContactService contactService;
+	AppProperties props;
 
 	@Autowired
-	public ContactInfoController(ContactService contactService) {
+	public ContactInfoController(ContactService contactService, AppProperties props) {
 		this.contactService = contactService;
+		this.props = props;
 	}
 
 	@GetMapping("/")
@@ -31,14 +36,15 @@ public class ContactInfoController {
 
 	@PostMapping("/save_contact")
 	public String saveContact(Contact contact, Model model) {
-
+        Map<String, String> messages = props.getMessages();
+        Integer cid = contact.getId();
 		boolean status = contactService.saveOrUpdateContact(contact);
-		if (status) {
-			model.addAttribute("succMsg", "Contact created successfully!!");
-		}if (status && contact.getId() > 0)  {
-			model.addAttribute("succMsg", "Contact updated successfully!!");
-		} else {
-			model.addAttribute("failMsg", "Contact failed to create!!");
+		if (status && cid <= 0) {
+			model.addAttribute("succMsg", messages.get("succMsg"));
+		}else if (status)  {
+			model.addAttribute("succMsg", messages.get("succUpdatedMsg"));
+		}else {
+			model.addAttribute("failMsg", messages.get("failMsg"));
 		}
 
 		return "contact";
@@ -62,14 +68,14 @@ public class ContactInfoController {
 	}
 
 	@GetMapping("/delete_contact")
-	public String delete_contact(Model model, @RequestParam("id") Integer id) {
-
+	public String delete_contact(@RequestParam("id") Integer id, RedirectAttributes rd) {
+		Map<String, String> messages = props.getMessages();
 		boolean status = contactService.DeleteContactById(id);
 
 		if (status) {
-			model.addAttribute("succMsg", "Contact deleted successfully!!");
+			rd.addFlashAttribute("succMsg", messages.get("deletedSuccMSg"));
 		} else {
-			model.addAttribute("failMsg", "Contact failed to delete!!");
+			rd.addFlashAttribute("failMsg", messages.get("deletedErrMSg"));
 		}
 
 		return "redirect:display_contacts";

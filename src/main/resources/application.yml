@@ -15,3 +15,10 @@ spring:
     view:
       prefix: /views/
       suffix: .jsp
+phonebook:
+  messages:
+    succMsg: Contact saved successfuly
+    errMSg: Contact failed to save
+    succUpdatedMsg: Contact updated successfuly
+    deletedSuccMSg: Contact deleted successfuly
+    deletedErrMSg: Contact failed to delete

@@ -13,8 +13,10 @@ function confirmDelete(){
 </head>
 <body>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<span>${failMsg}</span><span>${succMsg}</span>
 <h3>List of Contacts</h3>
+<a href="/" > Create new contact </a>
+
 <table border="1">
 <thead>
 <tr><th>Name</th><th>Email</th><th>Phone number</th></tr>
